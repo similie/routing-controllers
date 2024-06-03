@@ -100,15 +100,30 @@ export * from './driver/koa/KoaDriver';
 // Main Functions
 // -------------------------------------------------------------------------
 
+export class GlobalStore {
+  private static instance: GlobalStore;
+  private globalStore: any = {};
+  private constructor() {
+    //
+  }
+
+  public static get global(): any {
+    if (!GlobalStore.instance) {
+      GlobalStore.instance = new GlobalStore();
+    }
+    return GlobalStore.instance.globalStore;
+  }
+}
+
 /**
  * Gets metadata args storage.
  * Metadata args storage follows the best practices and stores metadata in a global variable.
  */
 export function getMetadataArgsStorage(): MetadataArgsStorage {
-  if (!(global as any).routingControllersMetadataArgsStorage)
-    (global as any).routingControllersMetadataArgsStorage = new MetadataArgsStorage();
+  if (!GlobalStore.global.routingControllersMetadataArgsStorage)
+    GlobalStore.global.routingControllersMetadataArgsStorage = new MetadataArgsStorage();
 
-  return (global as any).routingControllersMetadataArgsStorage;
+  return GlobalStore.global.routingControllersMetadataArgsStorage;
 }
 
 /**
